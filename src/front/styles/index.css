@@ -1,3 +1,117 @@
 /* 
     General Styles used on every website (Don't Repeat Yourself)
 */
+/* 
+    General Styles used on every website (Don't Repeat Yourself)
+*/
+.row {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 10px 10px 20px 10px;
+  padding-bottom: 20px;
+}
+.navbar {
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  height: 200px;
+  width: 425px;
+}
+.galaxy {
+  height: auto;
+  width: 100%;
+  max-width: 300px;
+}
+.nav-item {
+  position: relative;
+}
+.characters {
+  height: 45px;
+  width: 350px;
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+.planets {
+  width: 300px;
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+.starships {
+  width: 300px;
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+#heart {
+  float: right;
+}
+.people-img {
+  height: 300px;
+  width: 300px;
+  margin: 10px 550px 10px 550px;
+}
+#people-text {
+  text-align: center;
+}
+footer span {
+  display: inline-block;
+  margin-right: 10px;
+}
+.text-danger {
+  text-align: center;
+}
+.planet-img {
+  height: 300px;
+  width: 300px;
+  margin: 10px 550px 10px 550px;
+}
+.starship-img {
+  height: 400px;
+  width: 500px;
+  margin-left: 450px;
+}
+.dropdown {
+  position: absolute;
+  right: 100px;
+  width: 200px;
+  margin-top: -30px;
+}
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: auto;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 9rem;
+  padding: 0.5rem 0;
+  margin: 0.125rem 0 0;
+  font-size: 1rem;
+  color: #212529;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+}
+.dropdown-menu.show {
+  display: block;
+}
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 1.5rem;
+  clear: both;
+  font-weight: 400;
+  color: #212529;
+  text-align: inherit;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+}
