@@ -115,3 +115,8 @@ footer span {
   background-color: transparent;
   border: 0;
 }
+.api-img {
+  max-height: 300px;
+  max-width: 250px;
+  margin-left: 580px;
+}

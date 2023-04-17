@@ -8,7 +8,16 @@ const CardStarships = (props) => {
   return (
     <>
       <div className="card" style={{ width: "18rem" }}>
-        <img src={Rebel} className="rebel" alt="..." />
+        <img
+          src={`https://starwars-visualguide.com/assets/img/starships/${props.uid}.jpg`}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src =
+              "https://starwars-visualguide.com/assets/img/big-placeholder.jpg";
+          }}
+          className="card-img-top"
+          alt="..."
+        />
         <div className="card-body">
           <h5 className="card-title">{props.name}</h5>
           <p className="card-text">

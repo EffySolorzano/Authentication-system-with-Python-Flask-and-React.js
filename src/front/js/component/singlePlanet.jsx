@@ -24,7 +24,16 @@ const SinglePlanet = () => {
   return (
     <div className="card col-md-12">
       <div className="card-body">
-        <img className="planet-img" src={GalaticRepublic} alt="planet-img" />
+        <img
+          src={`https://starwars-visualguide.com/assets/img/planets/${params.uid}.jpg`}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src =
+              "https://starwars-visualguide.com/assets/img/big-placeholder.jpg";
+          }}
+          className="api-img"
+          alt="..."
+        />
         <h4 className="card-title text-center">
           {planet.name ? planet.name : ""}
         </h4>

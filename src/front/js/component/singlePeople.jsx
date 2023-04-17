@@ -24,7 +24,16 @@ const SinglePeople = () => {
   return (
     <div className="card col-md-12">
       <div className="card-body">
-        <img className="people-img" src={Jedi} alt="people-img" />
+        <img
+          src={`https://starwars-visualguide.com/assets/img/characters/${params.uid}.jpg`}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src =
+              "https://starwars-visualguide.com/assets/img/big-placeholder.jpg";
+          }}
+          className="api-img"
+          alt="..."
+        />
         <h4 className="card-title text-center">
           {people.name ? people.name : ""}
         </h4>

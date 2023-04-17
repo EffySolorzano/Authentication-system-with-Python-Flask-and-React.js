@@ -24,7 +24,16 @@ const SingleStarships = () => {
   return (
     <div className="card col-md-12">
       <div className="card-body">
-        <img className="starship-img" src={Rebel} alt="starship-img" />
+        <img
+          src={`https://starwars-visualguide.com/assets/img/starships/${params.uid}.jpg`}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src =
+              "https://starwars-visualguide.com/assets/img/big-placeholder.jpg";
+          }}
+          className="api-img"
+          alt="..."
+        />
         <h4 className="card-title text-center">
           {starship.name ? starship.name : ""}
         </h4>
