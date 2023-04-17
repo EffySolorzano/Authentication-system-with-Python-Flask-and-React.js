@@ -27,6 +27,21 @@ const getState = ({ getStore, getActions, setStore }) => {
       exampleFunction: () => {
         getActions().changeColor(0, "green");
       },
+
+      getMessage: async () => {
+        try {
+          // fetching data from the backend
+          const store = getStore();
+          const resp = await fetch(process.env.BACKEND_URL + "/api/hello");
+          const data = await resp.json();
+          setStore({ ...store, message: data.message });
+          // don't forget to return something, that is how the async resolves
+          return data;
+        } catch (error) {
+          console.log("Error loading message from backend", error);
+        }
+      },
+
       changeColor: (index, color) => {
         //get the store
         const store = getStore();
@@ -46,14 +61,17 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
       ...exampleActions(getStore, getActions, setStore), //this will brings here the function exampleFunction, and it will be able to use store's states and actions
       ...usuarioActions(getStore, getActions, setStore),
-      ...todoActions(getStore, getActions, setStore),
       ...favoritosActions(getStore, getActions, setStore),
-      useFetch: async (endpoint, body, method = "GET") => {
-        let url = process.env.BACKEND_URL + endpoint;
+      useFetch: async (endpoint, body = "", method = "GET") => {
+        let url = "https://www.swapi.tech/api" + endpoint;
         console.log(url);
+        console.log(body);
         let response = await fetch(url, {
           method: method,
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
           body: body ? JSON.stringify(body) : null,
         });
 
@@ -61,16 +79,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 
         return { respuestaJson, response };
       },
-      useFetchParalelo: (endpoint, body, method = "GET") => {
-        let url = process.env.BACKEND_URL + endpoint;
-        console.log(url);
-        let response = fetch(url, {
+      useSwapi: async (endpoint, method = "GET") => {
+        let url = "https://www.swapi.tech/api" + endpoint;
+        let response = await fetch(url, {
           method: method,
-          headers: { "Content-Type": "application/json" },
-          body: body ? JSON.stringify(body) : null,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+          body: null,
         });
 
-        return response;
+        let respuestaJson = await response.json();
+
+        return { respuestaJson, response };
       },
     },
   };
