@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import Swl from "../../img/swl.jpg";
 import Galaxy from "../../img/galaxy.jpg";
 import { Context } from "../store/appContext";
+import Login from "../pages/login.jsx";
 
 export const Navbar = () => {
   const { store, actions } = useContext(Context);
+  const [showLogin, setShowLogin] = useState(false);
 
   const handleDelete = (itemIndex) => {
     actions.deleteFavorite(itemIndex);
@@ -61,6 +63,13 @@ export const Navbar = () => {
             )}
           </ul>
         </div>
+        <button
+          className="btn btn-warning login"
+          onClick={() => setShowLogin(!showLogin)}
+        >
+          Login
+        </button>
+        {showLogin ? <Login onClose={() => setShowLogin(false)} /> : null}
       </div>
     </nav>
   );
