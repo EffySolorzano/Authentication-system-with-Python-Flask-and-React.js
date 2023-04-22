@@ -9,6 +9,7 @@ import SinglePeople from "./component/singlePeople.jsx";
 import SinglePlanet from "./component/singlePlanet.jsx";
 import SingleStarships from "./component/singleStarships.jsx";
 import Login from "./pages/login.jsx";
+import Register from "./pages/register.jsx";
 
 import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
@@ -37,6 +38,7 @@ const Layout = () => {
             />
             <Route element={<Single />} path="/single/:thetitle" />
             <Route element={<Login />} path="/login" />
+            <Route element={<Register />} path="/register" />
             <Route element={<SinglePeople />} path="/people/:uid" />
             <Route element={<SinglePlanet />} path="/planet/:uid" />
             <Route element={<SingleStarships />} path="/starships/:uid" />

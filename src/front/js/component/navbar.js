@@ -7,7 +7,6 @@ import Login from "../pages/login.jsx";
 
 export const Navbar = () => {
   const { store, actions } = useContext(Context);
-  const [showLogin, setShowLogin] = useState(false);
 
   const handleDelete = (itemIndex) => {
     actions.deleteFavorite(itemIndex);
@@ -63,13 +62,14 @@ export const Navbar = () => {
             )}
           </ul>
         </div>
-        <button
-          className="btn btn-warning login"
-          onClick={() => setShowLogin(!showLogin)}
-        >
-          Login
-        </button>
-        {showLogin ? <Login onClose={() => setShowLogin(false)} /> : null}
+        <Link to="/login">
+          <button className="btn btn-warning login">Login</button>
+        </Link>
+      </div>
+      <div>
+        <Link to="/register">
+          <button className="btn btn-warning register">Register</button>
+        </Link>
       </div>
     </nav>
   );

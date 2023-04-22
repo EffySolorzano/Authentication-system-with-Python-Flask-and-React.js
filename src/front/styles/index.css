@@ -120,3 +120,7 @@ footer span {
   max-width: 250px;
   margin-left: 580px;
 }
+.login-form {
+  margin-top: 50px;
+  width: 50rem;
+}
