@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import C3PO from "../../img/C3PO.png";
 import jwt_decode from "jwt-decode";
 
 const LoginForm = () => {
@@ -43,6 +44,9 @@ const LoginForm = () => {
     <>
       <div className="container-fluid">
         <div className="login-form">
+          <h1 className="fs-1 fw-bold mt-5">
+            <img src={C3PO} alt="c3pO-img" className="C3PO" />
+          </h1>
           <form className="d-flex flex-column" onSubmit={handleLogin}>
             <input
               type="text"

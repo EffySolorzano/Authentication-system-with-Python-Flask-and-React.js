@@ -27,6 +27,17 @@
   width: 100%;
   max-width: 300px;
 }
+
+.navbar .right-side {
+  display: flex;
+  align-items: center;
+  margin-right: 100px;
+}
+
+.navbar .right-side button {
+  margin-left: 20px;
+}
+
 .nav-item {
   position: relative;
 }
@@ -125,11 +136,12 @@ footer span {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 3rem;
+  margin-top: -40px;
 }
 .button-login {
   margin-top: 20px;
-  margin-left: 600px;
+  margin-left: 675px;
+  margin-bottom: 5rem;
   width: 20px;
   justify-content: center;
   align-items: center;
@@ -154,4 +166,9 @@ footer span {
   display: flex;
   justify-content: center;
   margin-top: 20px;
+}
+.C3PO {
+  height: 60px;
+  width: 60px;
+  justify-content: center;
 }
