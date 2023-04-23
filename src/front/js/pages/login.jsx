@@ -40,23 +40,28 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="login-form">
-      <form className="d-flex flex-column" onSubmit={handleLogin}>
-        <input
-          type="text"
-          className="form-control mb-2"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          className="form-control mb-2"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
+    <>
+      <div className="container-fluid">
+        <div className="login-form">
+          <form className="d-flex flex-column" onSubmit={handleLogin}>
+            <input
+              type="text"
+              className="form-control mb-2"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              className="form-control mb-2"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </form>
+        </div>
+      </div>
+      <div className="button-login">
         <button
           className="btn btn-outline-warning"
           type="submit"
@@ -64,8 +69,8 @@ const LoginForm = () => {
         >
           Login
         </button>
-      </form>
-    </div>
+      </div>
+    </>
   );
 };
 

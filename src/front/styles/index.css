@@ -121,6 +121,37 @@ footer span {
   margin-left: 580px;
 }
 .login-form {
-  margin-top: 50px;
-  width: 50rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 3rem;
+}
+.button-login {
+  margin-top: 20px;
+  margin-left: 600px;
+  width: 20px;
+  justify-content: center;
+  align-items: center;
+}
+.death {
+  height: 60px;
+  width: 60px;
+  justify-content: center;
+  margin-left: 40rem;
+  margin-top: -20px;
+}
+.form {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 3rem;
+}
+.register-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }

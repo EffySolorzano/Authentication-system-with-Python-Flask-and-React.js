@@ -1,13 +1,16 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import Deathstar from "../../img/deathstar.png";
 
 const Register = () => {
   const { store, actions } = useContext(Context);
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const isActive = true;
+  const [isActive, setIsActive] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,26 +22,52 @@ const Register = () => {
   }, [password]);
 
   const handleRegister = async (e) => {
-    e.preventDefault(); // prevent form from submitting
-    const response = await actions.register(name, email, password, isActive); // call register action
-    console.log(response);
+    e.preventDefault();
+    if (!name || !username || !email || !password) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please fill in all fields",
+      });
+      return;
+    }
+    const response = await actions.register(
+      name,
+      username,
+      email,
+      password,
+      isActive
+    );
     if (response.ok) {
-      navigate("/login"); // redirect to login component
+      Swal.fire({
+        icon: "success",
+        title: "Registration successful!",
+      }).then(() => {
+        navigate("/login");
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Registration failed. Please try again later.",
+      });
     }
   };
 
+  console.log(actions);
+
   return (
     <>
-      <div className="container-fluid bg bg-dark">
-        <div className="contactForm container bg bg-white">
-          <div className="d-flex justify-content-center">
-            <h1 className="fs-1 fw-bold mt-5">Register</h1>
+      <div>
+        <div className="container-fluid">
+          <div className="register-form">
+            <h1 className="fs-1 fw-bold mt-5">
+              <img src={Deathstar} alt="deathstar-img" className="death" />
+            </h1>
           </div>
-          <div className="form-control border border-0 ps-4 pe-4">
+          <div className="form">
             <form>
-              <label htmlFor="full-name" className="form-label fs-5">
-                Full Name
-              </label>
+              <label htmlFor="fullname">Full Name</label>
               <input
                 type="text"
                 className="form-control mb-3"
@@ -47,9 +76,16 @@ const Register = () => {
                   setName(e.target.value);
                 }}
               />
-              <label htmlFor="email" className="form-label fs-5">
-                Email
-              </label>
+              <label htmlFor="username">Username</label>
+              <input
+                type="text"
+                className="form-control mb-3"
+                placeholder="Enter username"
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                }}
+              />
+              <label htmlFor="email">Email</label>
               <input
                 type="text"
                 className="form-control mb-3"
@@ -58,9 +94,7 @@ const Register = () => {
                   setEmail(e.target.value);
                 }}
               />
-              <label htmlFor="password" className="form-label fs-5">
-                Password
-              </label>
+              <label htmlFor="password">Password</label>
               <input
                 type="password"
                 className="form-control mb-3"
@@ -69,10 +103,10 @@ const Register = () => {
                   setPassword(e.target.value);
                 }}
               />
-              <div className="d-flex justify-content-center">
+              <div className="register-button-container">
                 <button
                   type="button"
-                  className="button-save col-md-6 btn btn-primary fs-6 fw-bold"
+                  className="btn btn-outline-warning"
                   onClick={handleRegister}
                 >
                   Register
