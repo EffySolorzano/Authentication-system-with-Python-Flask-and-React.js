@@ -77,3 +77,22 @@ def register():
 
     # devolver el nuevo usuario creado
     return jsonify({"message": "User successfully created", "user": new_user.to_dict()}), 201
+
+@api.route('/login', methods=['POST'])
+def login():
+    body = request.get_json()
+    email=body["email"]
+    password = body["password"]
+
+    user = User.query.filter_by(email=email).first()
+
+    if user is None:
+        return jsonify({"message":"Login failed"}), 401
+
+    #validar el password encriptado
+    if not bcrypt.check_password_hash(user.password, password):
+        return jsonify({"message":"Login failed"}), 401
+    
+    access_token = create_access_token(identity=user.id)
+    return jsonify({"token":access_token}), 200
+        
