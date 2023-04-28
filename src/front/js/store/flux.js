@@ -47,9 +47,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 
       ...userActions(getStore, getActions, setStore),
 
-      useFetch: async (url, endpoint, body, method = "GET") => {
-        url = `${process.env.BACKEND_URL}/api` + endpoint;
+      useFetch: async (endpoint, body = "", method = "GET") => {
+        let url = "https://www.swapi.tech/api" + endpoint;
         console.log(url);
+        console.log(body);
         let response = await fetch(url, {
           method: method,
           headers: {

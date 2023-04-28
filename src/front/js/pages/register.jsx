@@ -6,7 +6,7 @@ import Deathstar from "../../img/deathstar.png";
 
 const Register = () => {
   const { store, actions } = useContext(Context);
-  const [name, setName] = useState("");
+  const [fullname, setFullname] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,28 +22,15 @@ const Register = () => {
   }, [password]);
 
   const handleRegister = async (e) => {
-    e.preventDefault();
-    if (!name || !username || !email || !password) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Please fill in all fields",
-      });
-      return;
-    }
-    const response = await actions.register(
-      name,
-      username,
-      email,
-      password,
-      isActive
-    );
+    e.preventDefault(); // prevent form from submitting
+    const response = await actions.register(fullname, email, password); // call register action
+    console.log(response);
     if (response.ok) {
       Swal.fire({
         icon: "success",
         title: "Registration successful!",
       }).then(() => {
-        navigate("/login");
+        navigate("/login"); // redirect to login component
       });
     } else {
       Swal.fire({
@@ -73,7 +60,7 @@ const Register = () => {
                 className="form-control mb-3"
                 placeholder="Enter full name"
                 onChange={(e) => {
-                  setName(e.target.value);
+                  setFullname(e.target.value);
                 }}
               />
               <label htmlFor="username">Username</label>

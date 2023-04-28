@@ -30,12 +30,9 @@ export const userActions = (getStore, getActions, setStore) => ({
     try {
       const token = localStorage.getItem("token");
       if (!token) return null;
-      const response = await fetch(
-        "https://3001-effysolorza-authenticat-str1q4tjvum.ws-us95.gitpod.io/api/user",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await fetch(process.env.BACKEND_URL + "/user", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const data = await response.json();
       const user = data.user;
       setStore({ user, error: null });
@@ -46,7 +43,7 @@ export const userActions = (getStore, getActions, setStore) => ({
       throw error;
     }
   },
-  register: async (name, username, email, password, isActive) => {
+  register: async (fullname, username, email, password, isActive) => {
     try {
       const response = await fetch(process.env.BACKEND_URL + "/register", {
         method: "POST",

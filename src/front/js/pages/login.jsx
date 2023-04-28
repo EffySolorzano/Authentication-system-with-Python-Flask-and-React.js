@@ -3,7 +3,6 @@ import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import C3PO from "../../img/C3PO.png";
-import jwt_decode from "jwt-decode";
 
 const Login = () => {
   const { actions } = useContext(Context);
