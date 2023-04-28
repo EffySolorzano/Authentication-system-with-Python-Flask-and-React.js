@@ -1,18 +1,18 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+import os
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, People, Planets, Starships, Favorites, TokenBlockedList
+from api.models import db, User, People, Planets, Starships, TokenBlockedList
 from api.utils import generate_sitemap, APIException
 
+from api.ext import jwt, bcrypt
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity, get_jwt
 from flask_jwt_extended import jwt_required
-from flask_jwt_extended import JWTManager
+from flask_bcrypt import generate_password_hash
 
 from datetime import date, time, datetime, timezone, timedelta
-
-from flask_bcrypt import Bcrypt
 
 api = Blueprint('api', __name__)
 
@@ -106,10 +106,10 @@ def edit_user():
 def register_user():
     #recibir el body en json, des-jsonificarlo y almacenarlo en la variable body
     body = request.get_json() #request.json() pero hay que importar request y json
-
+    print (body)
     #ordernar cada uno de los campos recibidos
     email = body["email"]
-    fullname = body["fullname"]
+    fullname = body.get("fullname")  # add this line to get the 'fullname' value, if present
     username = body["username"]
     password = body["password"]
     is_active = body["is_active"]
@@ -119,20 +119,32 @@ def register_user():
         raise APIException("You need to specify the request body as json object", status_code=400)
     if "email" not in body:
         raise APIException("You need to specify the email", status_code=400)
+    if "fullname" not in body:  # add this check for the 'fullname' key
+        raise APIException("You need to specify the fullname", status_code=400)
+    if "username" not in body:  # add this check for the 'username' key
+        raise APIException("You need to specify the username", status_code=400)
+    if "password" not in body:  # add this check for the 'password' key
+        raise APIException("You need to specify the password", status_code=400)
+    if "is_active" not in body:  # add this check for the 'is_active' key
+        raise APIException("You need to specify if is_active", status_code=400)          
+
+    #hashing the password
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     #creada la clase User en la variable new_user
-    new_user = User(email=email, fullname=fullname, username=username, password=password, is_active=is_active)
+    new_user = User(email=email, fullname=fullname, username=username, password=hashed_password, is_active=is_active)
 
     #comitear la sesión
     db.session.add(new_user) #agregamos el nuevo usuario a la base de datos
     db.session.commit() #guardamos los cambios en la base de datos
 
-    return jsonify({"mensaje":"User successfully created"}), 201 
+    return jsonify({"mensaje":"User successfully created"}), 201
+
 
 @api.route('/login', methods=['POST'])
 def login():
     body = request.get_json()
-    email=body["email"]
+    email= body["email"]
     password = body["password"]
 
     user = User.query.filter_by(email=email).first()
@@ -140,10 +152,13 @@ def login():
     if user is None:
         return jsonify({"message":"Login failed"}), 401
 
-    #validar el password encriptado
-    if not bcrypt.check_password_hash(user.password, password):
-        return jsonify({"message":"Login failed"}), 401
-    
+    try:
+        #validar el password encriptado
+        if not bcrypt.check_password_hash(user.password, password):
+            return jsonify({"message":"Login failed"}), 401
+    except ValueError:
+        return jsonify({"message":"Invalid salt"}), 500
+
     access_token = create_access_token(identity=user.id)
     return jsonify({"token":access_token}), 200
         
@@ -171,7 +186,6 @@ def protected():
 
     print("EL usuario es: ", user.name)
     return jsonify({"message":"Estás en una ruta protegida"}), 200
-
 
 ###STAR WARS Characters     
 

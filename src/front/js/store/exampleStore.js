@@ -6,14 +6,11 @@ export const userStore = {
 export const userActions = (getStore, getActions, setStore) => ({
   login: async (email, password) => {
     try {
-      const response = await fetch(
-        "https://3001-effysolorza-authenticat-str1q4tjvum.ws-us95.gitpod.io/login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      const response = await fetch(process.env.BACKEND_URL + "/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
       const data = await response.json();
       const user = data.user;
       localStorage.setItem("token", data.token);
@@ -49,42 +46,22 @@ export const userActions = (getStore, getActions, setStore) => ({
       throw error;
     }
   },
-
-  register: async (fullName, userName, email, password) => {
-    const actions = getActions();
-    console.log(
-      "Es la encargada de registrar al usuario",
-      fullName,
-      userName,
-      email,
-      password
-    );
-    let obj = {
-      fullName: fullName,
-      userName: userName,
-      email: email,
-      password: password,
-    };
-
-    let { respuestaJson, response } = await actions.useFetch(
-      "https://3001-effysolorza-authenticat-str1q4tjvum.ws-us95.gitpod.io/register",
-      obj,
-      "POST"
-    );
-    console.log(response.ok);
-    console.log(respuestaJson);
-    if (response.ok) {
-      localStorage.setItem("token", respuestaJson.token);
-      sessionStorage.setItem("token", respuestaJson.token);
-      let token = localStorage.getItem("token");
-      setStore({ ...getStore(), userLogin: true });
-      //console.log("token", token)
-    } else {
-      console.log("registro fallido");
-      localStorage.setItem("token", "");
-      sessionStorage.setItem("token", "");
-      setStore({ ...getStore(), userLogin: false });
+  register: async (name, username, email, password, isActive) => {
+    try {
+      const response = await fetch(process.env.BACKEND_URL + "/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullname, username, email, password, isActive }),
+      });
+      const data = await response.json();
+      const user = data.user;
+      localStorage.setItem("token", data.token);
+      setStore({ user, error: null });
+      return { ok: true, user };
+    } catch (error) {
+      const message = error.message || "Something went wrong";
+      setStore({ user: null, error: message });
+      return { ok: false, message };
     }
-    return { respuestaJson, response };
   },
 });
