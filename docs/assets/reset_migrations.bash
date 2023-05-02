@@ -1,7 +1,7 @@
 rm -R -f ./migrations &&
 pipenv run init &&
-psql -U gitpod -c 'DROP DATABASE example;' || true &&
-psql -U gitpod -c 'CREATE DATABASE example;' &&
-psql -U gitpod -c 'CREATE EXTENSION unaccent;' -d example &&
+psql -U rhyccia -c 'DROP DATABASE project_db;' || true &&
+psql -U rhyccia -c 'CREATE DATABASE project_db;' &&
+psql -U rhyccia -c 'CREATE EXTENSION unaccent;' -d project_db &&
 pipenv run migrate &&
 pipenv run upgrade

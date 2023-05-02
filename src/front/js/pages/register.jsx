@@ -23,7 +23,13 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault(); // prevent form from submitting
-    const response = await actions.register(fullname, email, password); // call register action
+    const response = await actions.register(
+      fullname,
+      username,
+      email,
+      password,
+      isActive
+    ); // call register action
     console.log(response);
     if (response.ok) {
       Swal.fire({

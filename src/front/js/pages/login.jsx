@@ -20,10 +20,10 @@ const Login = () => {
       });
       return;
     }
-    let { respuestaJson, response } = await actions.login(email, password);
+    let response = await actions.login(email, password);
     if (response.ok) {
-      actions.initialFetchUsersData();
-      actions.getUserFavorites();
+      //actions.initialFetchUsersData();
+      //actions.getUserFavorites();
       Swal.fire({
         icon: "success",
         title: "Login successful!",

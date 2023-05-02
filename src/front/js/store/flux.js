@@ -65,6 +65,23 @@ const getState = ({ getStore, getActions, setStore }) => {
         return { respuestaJson, response };
       },
     },
+    useLocalFetch: async (endpoint, body = "", method = "POST") => {
+      let url = "http://127.0.0.1:3001/api" + endpoint;
+      console.log(url);
+      console.log(body);
+      let response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        body: body ? JSON.stringify(body) : null,
+      });
+
+      let respuestaJson = await response.json();
+
+      return { respuestaJson, response };
+    },
   };
 };
 
