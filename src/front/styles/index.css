@@ -87,9 +87,12 @@ footer span {
 }
 .dropdown {
   position: absolute;
-  right: 600px;
+  right: 270px;
   width: 150px;
   margin-top: -30px;
+  color: #090909;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 20px;
 }
 .dropdown-menu {
   position: absolute;
@@ -171,4 +174,15 @@ footer span {
   height: 60px;
   width: 60px;
   justify-content: center;
+}
+.logout {
+  margin-right: 160px;
+  margin-bottom: 30px;
+  font-size: 20px;
+  color: #090909;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+.dropdown,
+.logout {
+  display: inline-block;
 }

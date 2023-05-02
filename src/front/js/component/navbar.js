@@ -71,7 +71,7 @@ export const Navbar = () => {
             )}
           </ul>
         </div>
-        <button className="btn btn-warning" onClick={handleLogout}>
+        <button className="btn btn-warning logout" onClick={handleLogout}>
           Logout
         </button>
       </>
