@@ -130,6 +130,15 @@ export const userActions = (getStore, getActions, setStore) => {
     },
 
     agregarFavorito: async (favorito) => {
+      const token = localStorage.getItem("token");
+      await fetch("http://127.0.0.1:3001/api/favorites", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(favorito),
+      });
       const store = getStore();
       const newFavoritos = [...store.favoritos, favorito];
       setStore({ ...getStore(), favoritos: newFavoritos });

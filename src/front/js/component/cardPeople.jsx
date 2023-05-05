@@ -5,6 +5,20 @@ import Jedi from "../../img/jedi.jpeg";
 
 const CardPeople = (props) => {
   const { store, actions } = useContext(Context);
+
+  const handleAddFavorite = () => {
+    console.log("Username in handleAddFavorite:", store.username);
+    actions.agregarFavorito(
+      {
+        name: props.name,
+        uid: props.uid,
+        category: "people",
+        link: `/people/${props.uid}`,
+      },
+      store.username
+    );
+  };
+
   return (
     <>
       <div className="card" style={{ width: "18rem" }}>

@@ -74,7 +74,7 @@ def get_specific_user2():
   
     return jsonify(user.serialize()), 200
 
-@api.route('/get-user', methods=['DELETE'])
+@api.route('/delete-user', methods=['DELETE'])
 def delete_specific_user():
     body = request.get_json()   
     username = body["username"]
@@ -86,17 +86,18 @@ def delete_specific_user():
   
     return jsonify("Usuario borrado"), 200
 
-@api.route('/get-user', methods=['PUT'])
+@api.route('/update-user', methods=['PUT'])
 def edit_user():
     body = request.get_json()   
     username = body["username"]
 
-    user = User.query.get(id)   
+    user = User.query.filter_by(username=username).first()   
     user.username = username #modifique el nombre del usuario
 
     db.session.commit()
   
     return jsonify(user.serialize()), 200
+
 
 
 ###sign-in/register/logout####    
@@ -435,17 +436,22 @@ def delete_favorite(favorite_id):
 @api.route('/favorites', methods=['POST'])
 @jwt_required()
 def create_favorite():
-   
     body = request.get_json()
 
     # Ensure all required fields are present
     if not all(key in body for key in ('username', 'people_id', 'planet_id', 'starship_id')):
         return jsonify({'error': 'Missing fields'}), 400
 
-    # Find user by username and create new favorite object
+    # Find user by username
     user = User.query.filter_by(username=body['username']).first()
+
+    # Check if user exists
+    if user is None:
+        return jsonify({'error': 'User not found'}), 404
+
+    # Create new favorite object
     favorite = Favorites(
-        user=user,
+        username_id=user.id,
         people_id=body['people_id'],
         planet_id=body['planet_id'],
         starship_id=body['starship_id']
@@ -457,3 +463,5 @@ def create_favorite():
 
     # Return serialized favorite object as JSON response
     return jsonify(favorite.serialize()), 201
+
+
