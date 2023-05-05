@@ -3,21 +3,19 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import os
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, People, Planets, Starships, TokenBlockedList
+from api.models import db, User, People, Planets, Starships,Favorites, TokenBlockedList
 from api.utils import generate_sitemap, APIException
 
 from api.ext import jwt, bcrypt
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt_identity, get_jwt
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 from flask_bcrypt import generate_password_hash
 
-from datetime import date, time, datetime, timezone, timedelta
+
 
 api = Blueprint('api', __name__)
 
 def verificacionToken(jti):
-    jti#Identificador del JWT (es más corto)
+    jti
     print("jit", jti)
     token = TokenBlockedList.query.filter_by(token=jti).first()
 
@@ -26,6 +24,7 @@ def verificacionToken(jti):
     
     return True
 
+blacklist = set()
 
 @api.route('/hello', methods=['POST', 'GET'])
 def handle_hello():
@@ -69,18 +68,18 @@ def get_specific_user(name):
 @api.route('/get-user', methods=['POST'])
 def get_specific_user2():
     body = request.get_json()   
-    name = body["name"]
-
-    user = User.query.get(id)   
+    username = body["username"]
+    
+    user = User.query.filter_by(username=username).first()
   
     return jsonify(user.serialize()), 200
 
 @api.route('/get-user', methods=['DELETE'])
 def delete_specific_user():
     body = request.get_json()   
-    name = body["name"]
+    username = body["username"]
 
-    user = User.query.get(id) 
+    user = User.query.filter_by(username=username).first()
 
     db.session.delete(user)
     db.session.commit()  
@@ -90,10 +89,10 @@ def delete_specific_user():
 @api.route('/get-user', methods=['PUT'])
 def edit_user():
     body = request.get_json()   
-    name = body["name"]
+    username = body["username"]
 
     user = User.query.get(id)   
-    user.name = name #modifique el nombre del usuario
+    user.username = username #modifique el nombre del usuario
 
     db.session.commit()
   
@@ -165,27 +164,21 @@ def login():
 @api.route('/logout', methods=['POST'])
 @jwt_required()
 def logout():
-    jti = get_raw_jwt()['jti']
-    try:
-        revoked_token = RevokedTokenModel(jti=jti)
-        revoked_token.add()
-        return jsonify({"message": "You have been logged out."}), 200
-    except:
-        return jsonify({"message": "Something went wrong"}), 500
+    jti = get_jwt()['jti']
+    blacklist.add(jti)
+    return jsonify({"message": "Log out successfully"}), 200
 
-@api.route("/protected", methods=["GET"])
+
+# Use this decorator on protected endpoints to deny access to blacklisted tokens
 @jwt_required()
 def protected():
-    # Access the identity of the current user with get_jwt_identity
-    current_user = get_jwt_identity()
-    user = User.query.get(current_user)
-
-    token = verificacionToken(get_jwt()["jti"]) #reuso la función de verificacion de token
-    if token:
-       raise APIException('Token está en lista negra', status_code=404)
-
-    print("EL usuario es: ", user.name)
-    return jsonify({"message":"Estás en una ruta protegida"}), 200
+   jti = get_jwt()['jti']
+   if jti in blacklist:
+       return jsonify({"message": "Your token has been revoked"}), 401
+   else:
+       current_user = get_jwt_identity()
+   #Proceed with protected route
+       return jsonify({"message": f"This is a protected route for {current_user}"}), 200
 
 ###STAR WARS Characters     
 
@@ -410,11 +403,11 @@ def delete_starship():
 
 ## **************FAVORITES************
 
-@api.route('/favorites', methods=['POST'])
+@api.route('/favorites/user/<int:user_id>', methods=['GET'])
 @jwt_required()
-def list_favorites():
-    body = request.get_json()
-    user_id = body["user_id"]
+def list_favorites(user_id):
+  
+  
     if not user_id:
         raise APIException('Data missing', status_code=404)
     
@@ -422,16 +415,45 @@ def list_favorites():
 
     if not user:
         raise APIException('User Not Found', status_code=404)
-
-    user_favorites = FavoritePeople.query.filter_by(user_id = user.id).all() #nos devuelve todas las coincidencias
-    user_favorites_final = list(map(lambda item: item.serialize(), user_favorites))
-
-    user_favorites_planets = FavoritePlanet.query.filter_by(user_id = user.id).all()
-    user_favorites_final_planets = list(map(lambda item: item.serialize(), user_favorites_planets))
-
-    user_favorites_vehicles = FavoriteVehicle.query.filter_by(user_id = user.id).all()
-    user_favorites_final_vehicles = list(map(lambda item: item.serialize(), user_favorites_vehicles))
     
-    user_favorites_final = user_favorites_final + user_favorites_final_planets + user_favorites_final_vehicles
-
+    user_favorites = Favorites.query.filter_by(user_id=user_id).all()
+    user_favorites_final = list(map(lambda item: item.serialize(), user_favorites))
+    
     return jsonify(user_favorites_final), 201
+
+@api.route('/favorites/<int:favorite_id>', methods=['DELETE'])
+@jwt_required()
+def delete_favorite(favorite_id):
+    favorite = Favorites.query.get(favorite_id)
+    if not favorite:
+        raise APIException('Favorite Not Found', status_code=404)
+    db.session.delete(favorite)
+    db.session.commit()
+    return jsonify({'message': 'Favorite deleted successfully'}), 200
+
+
+@api.route('/favorites', methods=['POST'])
+@jwt_required()
+def create_favorite():
+   
+    body = request.get_json()
+
+    # Ensure all required fields are present
+    if not all(key in body for key in ('username', 'people_id', 'planet_id', 'starship_id')):
+        return jsonify({'error': 'Missing fields'}), 400
+
+    # Find user by username and create new favorite object
+    user = User.query.filter_by(username=body['username']).first()
+    favorite = Favorites(
+        user=user,
+        people_id=body['people_id'],
+        planet_id=body['planet_id'],
+        starship_id=body['starship_id']
+    )
+
+    # Add new favorite to the database
+    db.session.add(favorite)
+    db.session.commit()
+
+    # Return serialized favorite object as JSON response
+    return jsonify(favorite.serialize()), 201

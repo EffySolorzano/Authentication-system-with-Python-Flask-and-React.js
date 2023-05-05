@@ -74,7 +74,7 @@ class Starships(db.Model):
         
 class Favorites(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    username_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     people_id = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=True)
     planet_id = db.Column(db.Integer, db.ForeignKey('planets.id'), nullable=True)
     starship_id = db.Column(db.Integer, db.ForeignKey('starships.id'), nullable=True)

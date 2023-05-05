@@ -65,7 +65,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         return { respuestaJson, response };
       },
     },
-    useLocalFetch: async (endpoint, body = "", method = "POST") => {
+    useLocalFetch: async (endpoint, body = "", method = "GET") => {
       let url = "http://127.0.0.1:3001/api" + endpoint;
       console.log(url);
       console.log(body);
