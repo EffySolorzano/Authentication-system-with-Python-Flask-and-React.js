@@ -19,6 +19,18 @@ const CardPeople = (props) => {
     );
   };
 
+  const addPeople = () => {
+    const characterData = {
+      name: props.name,
+      height: props.height || "", // Provide a default value if the property is missing
+      mass: props.mass || "", // Provide a default value if the property is missing
+      hair_color: props.hair_color || "", // Provide a default value if the property is missing
+      eye_color: props.eye_color || "", // Provide a default value if the property is missing
+    };
+
+    actions.addPeople(characterData);
+  };
+
   return (
     <>
       <div className="card" style={{ width: "18rem" }}>
@@ -44,16 +56,15 @@ const CardPeople = (props) => {
             Learn More!
           </Link>
           <button
+            className="btn btn-transparent btn-outline-warning add"
+            onClick={addPeople} // Call the addPeople function when the button is clicked
+          >
+            <i className="fa-solid fa-plus"></i>
+          </button>
+          <button
             className="btn btn-outline-warning"
             id="heart"
-            onClick={() => {
-              actions.agregarFavorito({
-                name: props.name,
-                uid: props.uid,
-                category: "people",
-                link: `/people/${props.uid}`,
-              });
-            }}
+            onClick={handleAddFavorite}
           >
             <i className="fa-solid fa-heart"></i>
           </button>

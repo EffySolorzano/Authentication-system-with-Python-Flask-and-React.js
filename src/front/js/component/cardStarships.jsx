@@ -5,6 +5,17 @@ import Rebel from "../../img/rebel.jpeg";
 
 const CardStarships = (props) => {
   const { store, actions } = useContext(Context);
+  const addStarship = () => {
+    const starshipData = {
+      model: props.name,
+      starship_class: props.starship_class || "",
+      manufacturer: props.manufacturer || "",
+      cost_in_credits: props.cost_in_credits || "",
+      length: props.length || "",
+    };
+
+    actions.addStarship(starshipData);
+  };
   return (
     <>
       <div className="card" style={{ width: "18rem" }}>
@@ -29,6 +40,12 @@ const CardStarships = (props) => {
           <Link to={`/starships/${props.uid}`} className="btn btn-outline-dark">
             Learn More!
           </Link>
+          <button
+            className="btn btn-transparent btn-outline-warning add"
+            onClick={addStarship}
+          >
+            <i className="fa-solid fa-plus"></i>
+          </button>
           <button
             className="btn btn-outline-warning"
             id="heart"

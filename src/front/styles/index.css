@@ -186,3 +186,6 @@ footer span {
 .logout {
   display: inline-block;
 }
+.add {
+  margin-left: 30px;
+}
