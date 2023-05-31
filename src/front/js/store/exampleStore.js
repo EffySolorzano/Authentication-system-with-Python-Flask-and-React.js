@@ -32,15 +32,35 @@ export const userActions = (getStore, getActions, setStore) => {
   return {
     login: async (email, password) => {
       try {
-        const response = await fetch("http://127.0.0.1:3001/api" + "/login", {
+        const store = getStore();
+        const response = await fetch("http://127.0.0.1:3001/api/login", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({ email: email, password: password }),
         });
         const data = await response.json();
-        const user = data.user;
-        localStorage.setItem("token", data.token);
-        setStore({ ...getStore(), isLoggedIn: true });
+
+        console.log("Response Data:", data);
+
+        if (response.ok) {
+          const token = data.access_token; // Assign the token value from the response data
+          localStorage.setItem("token", token);
+          console.log("Token stored in localStorage:", token);
+          setStore({
+            ...getStore(),
+            isLoggedIn: true,
+            id: data.id,
+          });
+          localStorage.setItem("isLoggedIn", "true");
+        } else {
+          console.log("Login failed");
+          localStorage.removeItem("token");
+          setStore({ ...getStore(), isLoggedIn: false, id: null });
+          localStorage.removeItem("isLoggedIn");
+        }
+
         return response;
       } catch (error) {
         const message = error.message || "Something went wrong";
@@ -131,24 +151,112 @@ export const userActions = (getStore, getActions, setStore) => {
 
     agregarFavorito: async (favorito) => {
       const token = localStorage.getItem("token");
-      await fetch("http://127.0.0.1:3001/api/favorites", {
+      await fetch("http://127.0.0.1:3001/api//favorites", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(favorito),
+        body: JSON.stringify({
+          people_name: favorito.people_name || null,
+          planet_name: favorito.planet_name || null,
+          starship_name: favorito.starship_name || null,
+        }),
       });
       const store = getStore();
       const newFavoritos = [...store.favoritos, favorito];
       setStore({ ...getStore(), favoritos: newFavoritos });
     },
+
     deleteFavorite: async (favorite) => {
       const store = getStore();
       const updatedFavorites = store.favoritos.filter(
         (item) => item.name !== favorite.name
       );
       setStore({ ...getStore(), favoritos: updatedFavorites });
+    },
+    addPeople: async (props) => {
+      try {
+        const response = await fetch("http://127.0.0.1:3001/api/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: props.name,
+            height: props.height,
+            mass: props.mass,
+            hair_color: props.hair_color,
+          }),
+        });
+
+        if (response.status === 201) {
+          console.log("Character added successfully");
+          // Handle the updated store or state if necessary
+        } else {
+          console.log("Error adding character");
+          // Handle the error if needed
+        }
+      } catch (error) {
+        console.log("Error adding character:", error);
+        // Handle the error if needed
+      }
+    },
+    addPlanet: async (props) => {
+      try {
+        const response = await fetch("http://127.0.0.1:3001/api/add-planet", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: props.name,
+            diameter: props.diameter,
+            rotation_period: props.rotation_period,
+            orbital_period: props.orbital_period,
+            gravity: props.gravity,
+          }),
+        });
+
+        if (response.status === 201) {
+          console.log("Planet added successfully");
+          // Handle the updated store or state if necessary
+        } else {
+          console.log("Error adding planet");
+          // Handle the error if needed
+        }
+      } catch (error) {
+        console.log("Error adding planet:", error);
+        // Handle the error if needed
+      }
+    },
+    addStarship: async (props) => {
+      try {
+        const response = await fetch("http://127.0.0.1:3001/api/add-starship", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: props.model,
+            starship_class: props.starship_class,
+            manufacturer: props.manufacturer,
+            cost_in_credits: props.cost_in_credits,
+            length: props.length,
+          }),
+        });
+
+        if (response.status === 201) {
+          console.log("Starship added successfully");
+          // Handle the updated store or state if necessary
+        } else {
+          console.log("Error adding starship");
+          // Handle the error if needed
+        }
+      } catch (error) {
+        console.log("Error adding starship:", error);
+        // Handle the error if needed
+      }
     },
   };
 };

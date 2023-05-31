@@ -141,26 +141,37 @@ def register_user():
     return jsonify({"mensaje":"User successfully created"}), 201
 
 
-@api.route('/login', methods=['POST'])
+@api.route("/login", methods=["POST"])
 def login():
-    body = request.get_json()
-    email= body["email"]
-    password = body["password"]
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
 
     user = User.query.filter_by(email=email).first()
 
     if user is None:
-        return jsonify({"message":"Login failed"}), 401
+        return jsonify({"message": "Login failed"}), 401
 
-    try:
-        #validar el password encriptado
-        if not bcrypt.check_password_hash(user.password, password):
-            return jsonify({"message":"Login failed"}), 401
-    except ValueError:
-        return jsonify({"message":"Invalid salt"}), 500
+    # Validate password
+    if not bcrypt.check_password_hash(user.password, password):
+        return jsonify({"message": "Login failed"}), 401
 
-    access_token = create_access_token(identity=user.id)
-    return jsonify({"token":access_token}), 200
+    # Generate token
+    user_id = user.id
+    access_token = create_access_token(identity=user_id)
+    print("User ID:", user_id)
+    print("Access Token:", access_token)
+
+    return (
+        jsonify(
+            {
+                "message": "Logged in successfully",
+                "access_token": access_token,
+                "id": user_id,
+            }
+        ),
+        200,
+    )
+
         
 @api.route('/logout', methods=['POST'])
 @jwt_required()
@@ -210,6 +221,7 @@ def add_people():
     db.session.commit()
 
     return jsonify({"message": "New character added"}), 201
+
 
 @api.route('/get-person/<string:name>', methods = [ 'GET' ])
 def get_specific_person(name):
@@ -438,8 +450,8 @@ def delete_favorite(favorite_id):
 def create_favorite():
     body = request.get_json()
 
-    # Ensure all required fields are present
-    if not all(key in body for key in ('username', 'people_id', 'planet_id', 'starship_id')):
+    # Ensure username field is present
+    if 'username' not in body:
         return jsonify({'error': 'Missing fields'}), 400
 
     # Find user by username
@@ -452,9 +464,9 @@ def create_favorite():
     # Create new favorite object
     favorite = Favorites(
         username_id=user.id,
-        people_id=body['people_id'],
-        planet_id=body['planet_id'],
-        starship_id=body['starship_id']
+        people_name=body.get('people_name', None),  # Update the field name to 'people_name'
+        planet_name=body.get('planet_name', None),  # Update the field name to 'planet_name'
+        starship_name=body.get('starship_name', None)  # Update the field name to 'starship_name'
     )
 
     # Add new favorite to the database
@@ -463,5 +475,8 @@ def create_favorite():
 
     # Return serialized favorite object as JSON response
     return jsonify(favorite.serialize()), 201
+
+
+
 
 

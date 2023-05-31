@@ -5,6 +5,19 @@ import GalaticRepublic from "../../img/GalaticRepublic.jpeg";
 
 const CardPlanet = (props) => {
   const { store, actions } = useContext(Context);
+
+  const addPlanet = () => {
+    const planetData = {
+      name: props.name,
+      diameter: props.diameter || "",
+      rotation_period: props.rotation_period || "",
+      orbital_period: props.orbital_period || "",
+      gravity: props.gravity || "",
+    };
+
+    actions.addPlanet(planetData);
+  };
+
   return (
     <>
       <div className="card" style={{ width: "18rem" }}>
@@ -29,6 +42,12 @@ const CardPlanet = (props) => {
           <Link to={`/planet/${props.uid}`} className="btn btn-outline-dark">
             Learn More!
           </Link>
+          <button
+            className="btn btn-transparent btn-outline-warning add"
+            onClick={addPlanet}
+          >
+            <i className="fa-solid fa-plus"></i>
+          </button>
           <button
             className="btn btn-outline-warning"
             id="heart"
